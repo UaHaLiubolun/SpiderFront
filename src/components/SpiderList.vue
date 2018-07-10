@@ -46,8 +46,7 @@
           fixed="right"
           label="操作">
           <template slot-scope="scope">
-            <el-button @click="viewInfo(scope.row)" type="text" size="small">查看</el-button>
-            <el-button type="text" size="small">编辑</el-button>
+            <el-button @click="viewInfo(scope.row)" type="text" size="small">编辑</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -59,7 +58,7 @@
         width="80%">
         <el-form ref="siteTask" :model="siteTask" >
           <el-form-item label="域名">
-            <el-input v-model="siteTask.site.domain"></el-input>
+            <el-input :disabled="isModify" v-model="siteTask.site.domain"></el-input>
           </el-form-item>
           <el-row>
             <el-col :span="10">
@@ -81,9 +80,29 @@
           <el-collapse v-model="activeNames">
             <el-collapse-item title="域名信息" name="1">
               <el-form-item label="域名">
-                <el-input v-model="siteTask.site.domain"></el-input>
+                <el-input :disabled="isModify" v-model="siteTask.site.domain"></el-input>
               </el-form-item>
+              <el-row>
+                <el-col :span="7">
+                  <el-form-item label="睡眠(s)">
+                    <el-input v-model="siteTask.site.sleepTime"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="1">&nbsp;</el-col>
+                <el-col :span="7">
+                  <el-form-item label="超时(s)">
+                    <el-input v-model="siteTask.site.timeOut"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="1">&nbsp;</el-col>
+                <el-col :span="7">
+                  <el-form-item label="重试次数">
+                    <el-input v-model="siteTask.site.retryTimes"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
             </el-collapse-item>
+
             <el-collapse-item title="StartURL" name="2">
               <el-form-item
                 v-for="(url, index) in startUrlTran"
@@ -209,6 +228,7 @@
       return {
         infoDialog: false,
         action: "edit",
+        isModify: false,
         activeNames: [],
         activeCNames: [],
         startUrlTran: [{
@@ -291,6 +311,7 @@
       viewInfo(row) {
         this.infoDialog = true
         this.action = "edit"
+        this.isModify = true
         this.siteTask = row
         this.startUrlTran = this.tranUrl(row.startUrls)
         this.targetUrlTran = this.tranUrl(row.pageModels[0].targetUrl)
@@ -298,8 +319,51 @@
         console.log(row)
       },
       addInfo() {
+        this.isModify = false
         this.action = "add"
         this.infoDialog = true
+        this.siteTask = {
+          site:{
+            domain: "",
+            userAgent: null,
+            cookies: {},
+            charset: "utf-8",
+            sleepTime: 0,
+            retryTimes: 0,
+            cycleRetryTimes: 0,
+            retrySleepTime: 1000,
+            timeOut: 5000,
+            acceptStatCode: [
+              200
+            ],
+            headers: {},
+          },
+          startUrls: [],
+          threadNum: 0,
+          interval: 0,
+          pageModels: [{
+            targetUrl: [],
+            helpUrl: [],
+            extracts: [{
+              filed: "",
+              value: "",
+              type: "",
+              source: "",
+              notNull: false,
+              multi: false,
+              dataConversion: {
+                function: "",
+                expression: ""
+              }
+            }]
+          }],
+          lastTime: 0,
+          on: false,
+          run: false
+        }
+        this.startUrlTran = []
+        this.targetUrlTran = []
+        this.helpUrlTran = []
       },
       submitData() {
         this.siteTask.startUrls = this.collectUrl(this.startUrlTran)
@@ -307,6 +371,16 @@
         this.siteTask.pageModels[0].helpUrl = this.collectUrl(this.helpUrlTran)
         if (this.action === "add") {
           this.$axios.post(this.$url + "/siteTask", this.siteTask)
+            .then(res => {
+              if (res.data.code === 0) {
+                this.infoDialog = false
+                this.showTeacherList()
+              } else {
+                alert("failed")
+              }
+            })
+        } else if (this.action === "edit") {
+          this.$axios.put(this.$url + "/siteTask", this.siteTask)
             .then(res => {
               if (res.data.code === 0) {
                 this.infoDialog = false
