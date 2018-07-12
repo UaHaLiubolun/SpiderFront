@@ -412,12 +412,55 @@
             targetUrl: [],
             helpUrl: [],
             extracts: [{
-              filed: "",
+              filed: "subject",
               value: [""],
               type: "XPath",
               source: "Html",
               notNull: false,
               multi: false,
+              dataConversion: null
+            },{
+              filed: "description",
+              value: [""],
+              type: "XPath",
+              source: "Html",
+              notNull: false,
+              multi: false,
+              dataConversion: null
+            },{
+              filed: "pubTime",
+              value: [""],
+              type: "XPath",
+              source: "Html",
+              notNull: false,
+              multi: false,
+              dataConversion: {
+                function: "fmtDate",
+                expression: "yyyy-MM-dd HH:mm:ss"
+              }
+            },{
+              filed: "parentSource",
+              value: [""],
+              type: "XPath",
+              source: "Html",
+              notNull: false,
+              multi: false,
+              dataConversion: null
+            },{
+              filed: "tbNickName",
+              value: [""],
+              type: "XPath",
+              source: "Html",
+              notNull: false,
+              multi: false,
+              dataConversion: null
+            },{
+              filed: "pics",
+              value: [""],
+              type: "XPath",
+              source: "Html",
+              notNull: false,
+              multi: true,
               dataConversion: null
             }]
           }],
