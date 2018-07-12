@@ -83,21 +83,27 @@
                 <el-input :disabled="isModify" v-model="siteTask.site.domain"></el-input>
               </el-form-item>
               <el-row>
-                <el-col :span="7">
+                <el-col :span="5">
                   <el-form-item label="睡眠(s)">
                     <el-input v-model="siteTask.site.sleepTime"></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="1">&nbsp;</el-col>
-                <el-col :span="7">
+                <el-col :span="5">
                   <el-form-item label="超时(s)">
                     <el-input v-model="siteTask.site.timeOut"></el-input>
                   </el-form-item>
                 </el-col>
                 <el-col :span="1">&nbsp;</el-col>
-                <el-col :span="7">
+                <el-col :span="5">
                   <el-form-item label="重试次数">
                     <el-input v-model="siteTask.site.retryTimes"></el-input>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="1">&nbsp;</el-col>
+                <el-col :span="5">
+                  <el-form-item label="编码">
+                    <el-input v-model="siteTask.site.charset"></el-input>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -113,10 +119,20 @@
       required: true, message: 'Url不能为空', trigger: 'blur'
     }"
               >
-                <el-input v-model="url.value"></el-input><el-button @click.prevent="removeStartUrl(url)">删除</el-button>
+                <el-row>
+                  <el-col :span="10">
+                    <el-input v-model="url.value"></el-input>
+                  </el-col>
+                  <el-col :span="5">
+                    &nbsp;
+                  </el-col>
+                  <el-col :span="3">
+                    <el-button type="danger" @click.prevent="removeStartUrl(url)">删除</el-button>
+                  </el-col>
+                </el-row>
               </el-form-item>
               <el-form-item>
-                <el-button @click="addStartUrl">新增Url</el-button>
+                <el-button type="primary" @click="addStartUrl">新增</el-button>
               </el-form-item>
             </el-collapse-item>
             <el-collapse-item title="PageModels" name="3">
@@ -133,10 +149,20 @@
       required: true, message: 'Url不能为空', trigger: 'blur'
     }"
                       >
-                        <el-input v-model="url.value"></el-input><el-button @click.prevent="removeTargetUrl(url)">删除</el-button>
+                        <el-row>
+                          <el-col :span="10">
+                            <el-input v-model="url.value"></el-input>
+                          </el-col>
+                          <el-col :span="5">
+                            &nbsp;
+                          </el-col>
+                          <el-col :span="3">
+                            <el-button type="danger" @click.prevent="removeTargetUrl(url)">删除</el-button>
+                          </el-col>
+                        </el-row>
                       </el-form-item>
                       <el-form-item>
-                        <el-button @click="addTargetUrl">新增TargetUrl</el-button>
+                        <el-button type="primary" @click="addTargetUrl">新增</el-button>
                       </el-form-item>
                     </el-collapse-item>
 
@@ -150,10 +176,20 @@
       required: true, message: 'Url不能为空', trigger: 'blur'
     }"
                       >
-                        <el-input v-model="url.value"></el-input><el-button @click.prevent="removeHelpUrl(url)">删除</el-button>
+                        <el-row>
+                          <el-col :span="10">
+                            <el-input v-model="url.value"></el-input>
+                          </el-col>
+                          <el-col :span="5">
+                            &nbsp;
+                          </el-col>
+                          <el-col :span="3">
+                            <el-button type="danger" @click.prevent="removeHelpUrl(url)">删除</el-button>
+                          </el-col>
+                        </el-row>
                       </el-form-item>
                       <el-form-item>
-                        <el-button @click="addHelpUrl">新增HelpUrl</el-button>
+                        <el-button type="primary" @click="addHelpUrl">新增</el-button>
                       </el-form-item>
                     </el-collapse-item>
 
@@ -186,25 +222,56 @@
                             </el-form-item>
                           </el-col>
                           <el-col :span="1">&nbsp;</el-col>
-                          <el-col :span="3">
+                          <el-col :span="2">
                             <el-form-item label="NotNull">
                               <el-switch v-model="extract.notNull"></el-switch>
                             </el-form-item>
                           </el-col>
                           <el-col :span="1">&nbsp;</el-col>
-                          <el-col :span="3">
+                          <el-col :span="2">
                             <el-form-item label="是否多项">
                               <el-switch v-model="extract.multi"></el-switch>
                             </el-form-item>
                           </el-col>
                         </el-row>
-                        <el-form-item label="表达式">
-                          <el-input v-model="extract.value"></el-input>
+                        <h1></h1>
+                        <lable>表达式</lable>
+                        <el-form-item v-for="(va, i) in extract.value"
+                        >
+                          <el-row>
+                            <el-col :span="10">
+                              <el-input v-model="extract.value[i]"></el-input>
+                            </el-col>
+                            <el-col :span="6">&nbsp;</el-col>
+                            <el-col :span="3">
+                              <el-button type="primary" icon="el-icon-plus" v-if="i === 0" @click="addValue(index)"></el-button>
+                              <el-button type="danger" icon="el-icon-delete" v-else @click="removeValue(index, va)"></el-button>
+                            </el-col>
+                          </el-row>
+                          <h1></h1>
                         </el-form-item>
-                        <el-button @click.prevent="removeExtract(extract)">删除</el-button>
+                        <h1></h1>
+                        <el-button v-if="extract.dataConversion === undefined || extract.dataConversion === null"
+                        type="primary" @click="openConversion(index)">使用处理函数</el-button>
+                        <el-button v-else type="danger" @click="closeConversion(index)">关闭处理函数</el-button>
+                        <el-row v-if="extract.dataConversion !== undefined && extract.dataConversion !== null">
+                          <el-col :span="10">
+                            <el-form-item label="函数名">
+                              <el-input v-model="extract.dataConversion.function"></el-input>
+                            </el-form-item>
+                          </el-col>
+                          <el-col :span="2">&nbsp;</el-col>
+                          <el-col :span="10">
+                            <el-form-item label="参数">
+                              <el-input v-model="extract.dataConversion.expression"></el-input>
+                            </el-form-item>
+                          </el-col>
+                        </el-row>
+                        <h1></h1>
+                        <el-button type="danger" @click.prevent="removeExtract(extract)">删除</el-button>
                       </el-form-item>
                       <el-form-item>
-                        <el-button @click="addExtract">新增HelpUrl</el-button>
+                        <el-button type="primary" @click="addExtract">新增</el-button>
                       </el-form-item>
                     </el-collapse-item>
                   </el-collapse>
@@ -267,7 +334,7 @@
             helpUrl: [],
             extracts: [{
               filed: "",
-              value: "",
+              value: [],
               type: "",
               source: "",
               notNull: false,
@@ -346,15 +413,12 @@
             helpUrl: [],
             extracts: [{
               filed: "",
-              value: "",
-              type: "",
-              source: "",
+              value: [""],
+              type: "XPath",
+              source: "Html",
               notNull: false,
               multi: false,
-              dataConversion: {
-                function: "",
-                expression: ""
-              }
+              dataConversion: null
             }]
           }],
           lastTime: 0,
@@ -430,22 +494,37 @@
       addExtract() {
         this.siteTask.pageModels[0].extracts.push({
           filed: "",
-          value: "",
+          value: [""],
           type: "Xpath",
           source: "Html",
           notNull: false,
           multi: false,
-          dataConversion: {
-            function: "",
-            expression: ""
-          }
+          dataConversion: null
         })
       },
       removeExtract(url) {
-        var index = this.siteTask.pageModels[0].extracts(url)
+        var index = this.siteTask.pageModels[0].extracts.indexOf(url)
         if (index !== -1) {
           this.siteTask.pageModels[0].extracts.splice(index, 1)
         }
+      },
+      addValue(index) {
+        this.siteTask.pageModels[0].extracts[index].value.push("")
+      },
+      removeValue(index, value) {
+        var i = this.siteTask.pageModels[0].extracts[index].value.indexOf(value)
+        if (i !== -1) {
+          this.siteTask.pageModels[0].extracts[index].value.splice(i, 1)
+        }
+      },
+      openConversion(index) {
+        this.siteTask.pageModels[0].extracts[index].dataConversion = {
+          function: "",
+          expression: ""
+        }
+      },
+      closeConversion(index) {
+        this.siteTask.pageModels[0].extracts[index].dataConversion = null
       },
       collectUrl(urlTran) {
         var urls = []
