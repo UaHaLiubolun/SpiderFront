@@ -2,7 +2,7 @@
   <div>
     <div id="home">
       <el-container style="height: 100vh">
-        <el-aside width="25%" height="100%">
+        <el-aside width="20%" height="100%">
           <x-nav class="nav"></x-nav>
         </el-aside>
         <el-container>
@@ -10,7 +10,7 @@
             <el-button @click="addListInfo()">添加</el-button>
           </el-header>
           <el-main>
-            <router-view class="content"></router-view>
+            <router-view :key="key" class="content"></router-view>
           </el-main>
         </el-container>
       </el-container>
@@ -25,7 +25,12 @@
             <el-input v-model="listInfo.url" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="父级列表" :label-width="formLabelWidth">
-            <el-input v-model="listInfo.parentUrl" auto-complete="off"></el-input>
+            <el-cascader
+              :options="options"
+              v-model="urls"
+              :props="props"
+              change-on-select
+            ></el-cascader>
           </el-form-item>
           <!--<el-form-item label="父级列表" :label-width="formLabelWidth">-->
             <!--<el-select v-model="listInfo.parentUrl">-->
@@ -56,6 +61,14 @@
       return {
         formLabelWidth: '120px',
         dialogFormVisible: false,
+        options: [],
+        urls: [],
+        props: {
+          label: 'name',
+          value: 'url',
+          children: 'children',
+          disabled: 'leaf'
+        },
         listInfo: {
           name: '',
           url: '',
@@ -65,7 +78,23 @@
       }
     },
     created () {
-      console.log('home')
+      this.$axios.get(this.$url + "/listInfo")
+        .then(rs => {
+          this.options = rs.data.result
+          this.options.push(
+            {
+              name: '跟',
+              url: 'parent',
+              leaf: false
+            }
+          )
+        })
+    },
+
+    computed: {
+      key() {
+        return this.$route.name !== undefined? this.$route.name +new Date(): this.$route +new Date()
+      }
     },
 
     methods: {
@@ -79,10 +108,12 @@
         }
       },
       submitListInfo() {
+        this.listInfo.parentUrl = this.urls[this.urls.length - 1]
         this.$axios.post(this.$url + "/listInfo", this.listInfo)
           .then(rs => {
             if (rs.data.code === 0) {
               this.dialogFormVisible = false
+              location.reload();
             }
           })
       }

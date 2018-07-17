@@ -7,8 +7,8 @@ import ElementUI from 'element-ui';
 import axios from 'axios'
 import tools from '@/tools'
 
-// const url = "http://172.29.4.24:8080"
-const url = "http://localhost:8080"
+const url = "http://172.29.4.24:8080"
+// const url = "http://localhost:8080"
 
 Vue.config.productionTip = false
 
