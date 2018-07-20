@@ -24,23 +24,29 @@
           <el-form-item label="列表Url" :label-width="formLabelWidth">
             <el-input v-model="listInfo.url" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="父级列表" :label-width="formLabelWidth">
-            <el-cascader
-              :options="options"
-              v-model="urls"
-              :props="props"
-              change-on-select
-            ></el-cascader>
+          <el-form-item label="来源" :label-width="formLabelWidth">
+            <template>
+              <el-select v-model="listInfo.source" filterable placeholder="请选择(可搜索)">
+                <el-option
+                  v-for="item in sources"
+                  :key="item.value"
+                  :label="item.value"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </template>
           </el-form-item>
-          <!--<el-form-item label="父级列表" :label-width="formLabelWidth">-->
-            <!--<el-select v-model="listInfo.parentUrl">-->
-              <!--<el-option label="新浪网" value="sina.com.cn"></el-option>-->
-              <!--<el-option label="凤凰网" value="ifeng.com"></el-option>-->
-            <!--</el-select>-->
-          <!--</el-form-item>-->
-          <el-form-item label="是否叶子列表">
-            <el-switch v-model="listInfo.leaf"></el-switch>
-          </el-form-item>
+          <el-form-item label="分类" :label-width="formLabelWidth">
+            <template>
+              <el-select v-model="listInfo.type" filterable placeholder="请选择(可搜索)">
+                <el-option
+                  v-for="item in types"
+                  :key="item.value"
+                  :label="item.value"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </template>          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -59,6 +65,76 @@
     },
     data() {
       return {
+        sources: [
+          {
+            value: 'News'
+          },
+          {
+            value: 'Weibo'
+          },
+          {
+            value: 'WeiXin'
+          },
+          {
+            value: 'Government'
+          },
+          {
+            value: 'LunTan'
+          },
+          {
+            value: 'Video'
+          },
+          {
+            value: 'TieBa'
+          },
+          {
+            value: 'Other'
+          },
+        ],
+        types: [
+          {
+            value: '体育'
+          },
+          {
+            value: '教育'
+          },
+          {
+            value: '财经'
+          },
+          {
+            value: '社会'
+          },
+          {
+            value: '娱乐'
+          },
+          {
+            value: '军事'
+          },
+          {
+            value: '国内'
+          },
+          {
+            value: '科技'
+          },
+          {
+            value: '互联网'
+          },
+          {
+            value: '房产'
+          },
+          {
+            value: '国际'
+          },
+          {
+            value: '女人'
+          },
+          {
+            value: '汽车'
+          },
+          {
+            value: '游戏'
+          },
+        ],
         formLabelWidth: '120px',
         dialogFormVisible: false,
         options: [],
@@ -72,23 +148,13 @@
         listInfo: {
           name: '',
           url: '',
-          parentUrl: '',
-          leaf: false,
+          source: '',
+          type: '',
         }
       }
     },
     created () {
-      this.$axios.get(this.$url + "/listInfo")
-        .then(rs => {
-          this.options = rs.data.result
-          this.options.push(
-            {
-              name: '跟',
-              url: 'parent',
-              leaf: false
-            }
-          )
-        })
+
     },
 
     computed: {
@@ -103,13 +169,13 @@
         this.listInfo = {
           name: '',
           url: '',
-          parentUrl: '',
-          leaf: false,
+          source: '',
+          type: '',
         }
       },
       submitListInfo() {
         this.listInfo.parentUrl = this.urls[this.urls.length - 1]
-        this.$axios.post(this.$url + "/listInfo", this.listInfo)
+        this.$axios.post(this.$url + "/newsList", this.listInfo)
           .then(rs => {
             if (rs.data.code === 0) {
               this.dialogFormVisible = false

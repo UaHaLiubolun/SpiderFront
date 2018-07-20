@@ -217,7 +217,9 @@
           site:{
             domain: ''
           },
-          type: 'ListSpider',
+          type: '',
+          source: '',
+          spiderType: 'ListSpider',
           pageModels: [{
             targetUrl: [],
             helpUrl: [],
@@ -323,6 +325,8 @@
               this.targetUrlTran = this.tranUrl(this.siteTask.pageModels[0].targetUrl)
               this.helpUrlTran = this.tranUrl(this.siteTask.pageModels[0].helpUrl)
             }
+            this.siteTask.type = rs.data.result.type
+            this.siteTask.source = rs.data.result.source
           }
         })
       this.$axios.get(this.$url + "/pageModel/all")
@@ -340,7 +344,7 @@
       submitData() {
         this.siteTask.pageModels[0].targetUrl = this.collectUrl(this.targetUrlTran)
         this.siteTask.pageModels[0].helpUrl = this.collectUrl(this.helpUrlTran)
-        this.siteTask.type = 'ListSpider'
+        this.siteTask.spiderType = 'ListSpider'
         if (this.action === "add") {
           this.$axios.post(this.$url + "/siteTask", this.siteTask)
             .then(res => {

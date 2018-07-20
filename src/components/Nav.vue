@@ -34,7 +34,7 @@
     },
 
     created() {
-      this.$axios.get(this.$url + "/listInfo")
+      this.$axios.get(this.$url + "/newsList")
         .then(rs => {
           this.listInfo = rs.data.result
         })
