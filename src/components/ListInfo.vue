@@ -6,9 +6,15 @@
          <el-input :disabled="isModify" v-model="siteTask.url"></el-input>
        </el-form-item>
        <el-row>
-         <el-col :span="10">
+         <el-col :span="4">
            <el-form-item label="间隔">
              <el-input v-model="siteTask.interval"></el-input>
+           </el-form-item>
+         </el-col>
+         <el-col :span="2">&nbsp;</el-col>
+         <el-col :span="4">
+           <el-form-item label="编码">
+             <el-input v-model="siteTask.charset"></el-input>
            </el-form-item>
          </el-col>
          <el-col :span="2">&nbsp;</el-col>
@@ -220,6 +226,7 @@
           type: '',
           source: '',
           spiderType: 'ListSpider',
+          charset: 'utf-8',
           pageModels: [{
             targetUrl: [],
             helpUrl: [],
