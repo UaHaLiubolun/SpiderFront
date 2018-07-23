@@ -221,6 +221,7 @@
           key: new Date()
         }],
         siteTask: {
+          urlMd5: '',
           url: '',
           interval: 0,
           site:{
@@ -258,6 +259,7 @@
             if (rs.data.result.id === null) {
               this.siteTask = {
                 interval: 3600,
+                urlMd5: this.getUrlMd5(),
                 site: {
                   domain: ''
                 },
@@ -330,6 +332,7 @@
               this.isModify = true
             } else {
               this.siteTask = rs.data.result
+              this.siteTask.urlMd5 = this.getUrlMd5()
               this.action = "edit"
               this.isModify = true
               this.targetUrlTran = this.tranUrl(this.siteTask.pageModels[0].targetUrl)
@@ -359,6 +362,7 @@
           this.$axios.post(this.$url + "/siteTask", this.siteTask)
             .then(res => {
               if (res.data.code === 0) {
+                this.action = "edit"
                 alert("success")
               } else {
                 alert("failed")
@@ -376,12 +380,12 @@
         }
       },
       deleteListInfo() {
-        this.$axios.delete(this.$url + "/listInfo?url=" + this.siteTask.url)
+        this.$axios.delete(this.$url + "/listInfo?url=" + this.getUrlMd5())
           .then(rs => {
             if (rs.data.code === 0) {
               alert("delete success")
               this.$router.push("/home")
-              location.reload()
+              // location.reload()
             } else {
               alert("delete failed")
             }
