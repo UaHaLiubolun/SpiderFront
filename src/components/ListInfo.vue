@@ -163,6 +163,9 @@
      </el-form>
      <h1></h1>
      <el-button @click="submitData">保存</el-button>
+     &nbsp;&nbsp;&nbsp;&nbsp;
+     <el-button type="danger" @click="deleteListInfo()">删除</el-button>
+
      &nbsp;
      <el-button @click="infoDialog = true">保存PageModel到模板</el-button>
    </div>
@@ -371,6 +374,18 @@
               }
             })
         }
+      },
+      deleteListInfo() {
+        this.$axios.delete(this.$url + "/listInfo?url=" + this.siteTask.url)
+          .then(rs => {
+            if (rs.data.code === 0) {
+              alert("delete success")
+              this.$router.push("/home")
+              location.reload()
+            } else {
+              alert("delete failed")
+            }
+          })
       },
       useModule() {
         for (var i in this.pageModelModule) {

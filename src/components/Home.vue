@@ -8,6 +8,7 @@
         <el-container>
           <el-header>
             <el-button @click="addListInfo()">添加</el-button>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           </el-header>
           <el-main>
             <router-view :key="key" class="content"></router-view>
