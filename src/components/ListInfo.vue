@@ -23,6 +23,12 @@
              <el-switch v-model="siteTask.on"></el-switch>
            </el-form-item>
          </el-col>
+         <el-col :span="2">&nbsp;</el-col>
+         <el-col :span="2">
+           <el-form-item label="是否测试">
+             <el-switch v-model="siteTask.test"></el-switch>
+           </el-form-item>
+         </el-col>
        </el-row>
        <el-form-item
          v-for="(url, index) in targetUrlTran"
@@ -249,6 +255,7 @@
           }],
           lastTime: 0,
           on: false,
+          test: true
         },
       }
     },
@@ -303,14 +310,6 @@
                     multi: false,
                     dataConversion: null
                   },{
-                    filed: "tbNickName",
-                    value: [""],
-                    type: "XPath",
-                    source: "Html",
-                    notNull: false,
-                    multi: false,
-                    dataConversion: null
-                  },{
                     filed: "pics",
                     value: [""],
                     type: "XPath",
@@ -322,7 +321,8 @@
                 }],
                 lastTime: 0,
                 on: false,
-                run: false
+                run: false,
+                test: true
               }
               this.siteTask.url = rs.data.result.url
               this.targetUrlTran = []
