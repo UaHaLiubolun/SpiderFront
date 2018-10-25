@@ -53,6 +53,8 @@
        </el-form-item>
        <el-form-item>
          <el-button type="primary" @click="addTargetUrl">新增目标URL</el-button>
+         &nbsp;&nbsp;&nbsp;
+         <el-button type="primary" @click="testTargetUrl">测试TargetUrl</el-button>
        </el-form-item>
        <h1></h1>
        <el-form-item
@@ -171,6 +173,8 @@
      <el-button @click="submitData">保存</el-button>
      &nbsp;&nbsp;&nbsp;&nbsp;
      <el-button type="danger" @click="deleteListInfo()">删除</el-button>
+     &nbsp;
+     <el-button type="success" @click="testPageModelDiaLog = true">测试模板</el-button>
 
      &nbsp;
      <el-button @click="infoDialog = true">保存PageModel到模板</el-button>
@@ -191,6 +195,45 @@
         </span>
      </el-dialog>
    </div>
+   <div>
+     <el-dialog title="目标URL" :visible.sync="targetUrlDiaLog">
+      <el-tag v-for="testUrl in testTargetUrls"
+              :key="testUrl"
+              closable
+              :type="info">
+            {{testUrl}}
+      </el-tag>
+       <div slot="footer" class="dialog-footer">
+         <el-button @click="targetUrlDiaLog = false">关 闭</el-button>
+       </div>
+     </el-dialog>
+   </div>
+
+   <div>
+     <el-dialog title="测试模板" :visible.sync="testPageModelDiaLog">
+       <el-form>
+         <el-form-item label="测试URL">
+           <el-input v-model="testPageModelUrl"></el-input>
+         </el-form-item>
+       </el-form>
+       <el-table
+         :data="testPageModelData">
+         <el-table-column
+           prop="filed"
+           label="字段名"
+           width="100">
+         </el-table-column>
+         <el-table-column
+           prop="value"
+           label="信息">
+         </el-table-column>
+       </el-table>
+       <div slot="footer" class="dialog-footer">
+         <el-button @click="testPageModel()">测试</el-button>
+         <el-button @click="targetUrlDiaLog = false">关 闭</el-button>
+       </div>
+     </el-dialog>
+   </div>
  </div>
 </template>
 
@@ -199,6 +242,11 @@
     name: "ListInfo",
     data() {
       return {
+        targetUrlDiaLog: false,
+        testTargetUrls: [],
+        testPageModelDiaLog: false,
+        testPageModelUrl: "",
+        testPageModelData: [],
         pageModelName: "",
         pageModelModule: [
           {
@@ -489,6 +537,42 @@
           })
         }
         return urlTran
+      },
+      testTargetUrl() {
+        var urls = ""
+        for (var i in this.targetUrlTran) {
+          urls = urls + this.targetUrlTran[i].value + ","
+        }
+        var tempUrl = this.$url + "/process/extractLinks?url=" + encodeURIComponent(this.siteTask.url) +"&expression=" + urls +"&charset=" + this.siteTask.charset
+        tempUrl = encodeURI(tempUrl)
+        this.$axios.get(tempUrl)
+          .then(rs => {
+            if (rs.data.code === 0) {
+              this.testTargetUrls = rs.data.result;
+              this.targetUrlDiaLog = true
+            } else {
+              alert("failed")
+            }
+          })
+      },
+      testPageModel() {
+        let tempUrl = this.$url + "/process/testPageModel?url=" + encodeURI(this.testPageModelUrl) + "&charset=" + this.siteTask.charset
+        this.$axios.post(tempUrl, this.siteTask.pageModels[0])
+          .then(res => {
+            if (res.data.code === 0) {
+              let testData = res.data.result;
+              let remove = ["tbNickName", "source", "classification", "tbNickName", "sourceUrl", "isTest", "refererUrl"]
+              this.testPageModelData = []
+              for (let i in testData) {
+                if (!remove.includes(i)) {
+                  this.testPageModelData.push({
+                    filed: i,
+                    value: testData[i]
+                  })
+                }
+              }
+            }
+          })
       }
     }
   }
