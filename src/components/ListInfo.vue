@@ -278,9 +278,6 @@
           urlMd5: '',
           url: '',
           interval: 0,
-          site:{
-            domain: ''
-          },
           type: '',
           source: '',
           spiderType: 'ListSpider',
@@ -315,9 +312,6 @@
               this.siteTask = {
                 interval: 3600,
                 urlMd5: this.getUrlMd5(),
-                site: {
-                  domain: ''
-                },
                 type: 'ListSpider',
                 pageModels: [{
                   targetUrl: [],
@@ -376,7 +370,6 @@
               this.targetUrlTran = []
               this.helpUrlTran = []
               this.action = "add"
-              this.siteTask.site = rs.data.result.site
               this.isModify = true
             } else {
               this.siteTask = rs.data.result

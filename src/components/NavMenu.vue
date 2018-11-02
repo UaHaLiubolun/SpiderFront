@@ -24,15 +24,6 @@
 
     data() {
       return {
-        // listInfo: {
-        //   url: '',
-        //   parentUrl: '',
-        //   name: '',
-        //   isLeaf: true,
-        //   children: [
-        //
-        //   ]
-        // }
       }
     },
 

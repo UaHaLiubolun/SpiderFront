@@ -47,7 +47,8 @@
                   :value="item.value">
                 </el-option>
               </el-select>
-            </template>          </el-form-item>
+            </template>
+          </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -166,13 +167,7 @@
 
     methods: {
       addListInfo() {
-        this.dialogFormVisible = true
-        this.listInfo = {
-          name: '',
-          url: '',
-          source: '',
-          type: '',
-        }
+        this.$router.push({path: '/site/add'});
       },
       submitListInfo() {
         this.listInfo.parentUrl = this.urls[this.urls.length - 1]
