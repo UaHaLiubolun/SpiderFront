@@ -5,6 +5,7 @@ import Home from '@/components/Home'
 import ListInfo from '@/components/ListInfo'
 import AddSite from '@/components/AddSite'
 import Tree from '@/components/Tree'
+import Gzh from  '@/components/Gzh'
 import TreeDetail from '@/components/TreeDetail'
 
 Vue.use(Router)
@@ -15,6 +16,11 @@ export default new Router({
       path: '/spider',
       name: 'SpiderList',
       component: SpiderList
+    },
+    {
+      path: "/gzh",
+      name: 'Gzh',
+      component: Gzh
     },
     {
       path: '/home',

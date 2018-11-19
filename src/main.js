@@ -7,8 +7,8 @@ import ElementUI from 'element-ui';
 import axios from 'axios'
 import tools from '@/tools'
 
-// const url = "http://spider-api.chinamcloud.com"
-const url  = "http://localhost:8080"
+const url = "http://spider-api.chinamcloud.com"
+// const url  = "http://localhost:8080"
 // const url = "http://172.29.4.69:8080"
 
 Vue.config.productionTip = false
