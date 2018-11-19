@@ -18,6 +18,11 @@
         width="150">
       </el-table-column>
       <el-table-column
+        prop="sourceId"
+        label="SourceID"
+        width="130">
+      </el-table-column>
+      <el-table-column
         prop="interval"
         label="间隔"
         width="120">
@@ -88,7 +93,8 @@
             "name": "新京报",
             "interval": "10000",
             "type": "国内新闻",
-            "on": "false"
+            "on": "false",
+            "sourceId": "123"
           }
         ]
       }
@@ -117,6 +123,8 @@
             if (rs.data.code === 0) {
               alert("添加成功")
               location.reload()
+            } else {
+              alert("已经有啦。不能在重复添加了")
             }
           })
       }
