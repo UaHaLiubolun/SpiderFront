@@ -35,6 +35,12 @@
       <el-table-column
         prop="lastTime"
         label="上次运行时间"
+        :formatter="formatTime"
+        width="170">
+      </el-table-column>
+      <el-table-column
+        prop="count"
+        label="抓取数量"
         width="120">
       </el-table-column>
       <el-table-column
@@ -83,6 +89,7 @@
           name: "",
           interval: "36000",
           on: "true",
+          count: 1,
           type: "国内新闻",
           lastTime: "0"
         },
@@ -91,6 +98,7 @@
             "lastTime": "1537489107",
             "gzhId": "bjnews_xjb",
             "name": "新京报",
+            "count": "1",
             "interval": "10000",
             "type": "国内新闻",
             "on": "false",
@@ -100,7 +108,7 @@
       }
     },
     created() {
-      this.$axios.get(this.$url + "/gzh")
+      this.$axios.get(this.$url + "/gzh?isCount=1")
         .then(rs => {
           if (rs.data.code === 0) {
             this.tableData = rs.data.result
@@ -127,6 +135,15 @@
               alert("已经有啦。不能在重复添加了")
             }
           })
+      },
+      formatTime(row, column) {
+        const date = new Date(row[column.property] * 1000)
+        console.log(row[column.property])
+        return date.getFullYear() + '年' +
+            date.getMonth() + '月' +
+            date.getDate() + '日 ' +
+            date.getHours() + ':' +
+            date.getMinutes()
       }
     }
   }
