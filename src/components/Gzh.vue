@@ -139,8 +139,7 @@
       formatTime(row, column) {
         const date = new Date(row[column.property] * 1000)
         console.log(row[column.property])
-        return date.getFullYear() + '年' +
-            date.getMonth() + '月' +
+        return date.getMonth() + '月' +
             date.getDate() + '日 ' +
             date.getHours() + ':' +
             date.getMinutes()
