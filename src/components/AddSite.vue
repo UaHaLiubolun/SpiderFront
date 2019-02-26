@@ -67,6 +67,33 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="4">
+            <el-form-item label="请求方式">
+              <el-input v-model="siteTask.method"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row v-if="siteTask.method != 'get'">
+          <el-col :span="4">
+            <el-form-item label="ContentType">
+              <el-select v-model="siteTask.contentType" placeholder="请选择">
+                <el-option
+                  v-for="item in contentTypes"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+                </el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="2">&nbsp;</el-col>
+          <el-col :span="15">
+            <el-form-item label="Param">
+              <el-input v-model="siteTask.body"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-form-item
           v-for="(url, index) in targetUrlTran"
           :label="'目标URL-' + index"
@@ -120,91 +147,101 @@
         </el-form-item>
         <h1></h1>
         <h1></h1>
-        <el-form-item label="PageModel模板:">
-          <el-select v-model="pageModelName" >
-            <el-option v-for="pageModelM in pageModelModule" :key="pageModelM.name" :label="pageModelM.name" :value="pageModelM.name"></el-option>
-          </el-select>
-          <el-button type="primary" @click="useModule">使用模板</el-button>
+        <el-form-item label="是否使用自定义Process">
+          <el-switch v-model="isOwnProcess"></el-switch>
         </el-form-item>
-        <el-form-item
-          v-for="(extract, index) in siteTask.pageModels[0].extracts"
-        >
-          <el-row>
-            <el-col :span="5">
-              <el-form-item label="字段">
-                <el-input v-model="extract.filed"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="1">&nbsp;</el-col>
-            <el-col :span="4">
-              <el-form-item label="数据类型">
-                <el-select v-model="extract.source" placeholder="数据类型">
-                  <el-option label="Html" value="Html"></el-option>
-                  <el-option label="Json" value="Json"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="1">&nbsp;</el-col>
-            <el-col :span="4">
-              <el-form-item label="解析方式">
-                <el-select v-model="extract.type" placeholder="解析方式">
-                  <el-option label="Xpath" value="Xpath"></el-option>
-                  <el-option label="Regex" value="Regex"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="1">&nbsp;</el-col>
-            <el-col :span="1">
-              <el-form-item label="NotNull">
-                <el-switch v-model="extract.notNull"></el-switch>
-              </el-form-item>
-            </el-col>
-            <el-col :span="1">&nbsp;</el-col>
-            <el-col :span="2">
-              <el-form-item label="是否多项">
-                <el-switch v-model="extract.multi"></el-switch>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <h1></h1>
-          <lable>表达式</lable>
-          <el-form-item v-for="(va, i) in extract.value"
+        <div v-if="isOwnProcess">
+          <el-form-item label="OwnProcess">
+            <el-input v-model="siteTask.pageModels[0].ownProcess"></el-input>
+          </el-form-item>
+        </div>
+        <div v-if="!isOwnProcess">
+          <el-form-item label="PageModel模板:">
+            <el-select v-model="pageModelName" >
+              <el-option v-for="pageModelM in pageModelModule" :key="pageModelM.name" :label="pageModelM.name" :value="pageModelM.name"></el-option>
+            </el-select>
+            <el-button type="primary" @click="useModule">使用模板</el-button>
+          </el-form-item>
+          <el-form-item
+            v-for="(extract, index) in siteTask.pageModels[0].extracts"
           >
             <el-row>
-              <el-col :span="10">
-                <el-input v-model="extract.value[i]"></el-input>
+              <el-col :span="5">
+                <el-form-item label="字段">
+                  <el-input v-model="extract.filed"></el-input>
+                </el-form-item>
               </el-col>
-              <el-col :span="6">&nbsp;</el-col>
-              <el-col :span="3">
-                <el-button type="primary" icon="el-icon-plus" v-if="i === 0" @click="addValue(index)"></el-button>
-                <el-button type="danger" icon="el-icon-delete" v-else @click="removeValue(index, va)"></el-button>
+              <el-col :span="1">&nbsp;</el-col>
+              <el-col :span="4">
+                <el-form-item label="数据类型">
+                  <el-select v-model="extract.source" placeholder="数据类型">
+                    <el-option label="Html" value="Html"></el-option>
+                    <el-option label="Json" value="Json"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="1">&nbsp;</el-col>
+              <el-col :span="4">
+                <el-form-item label="解析方式">
+                  <el-select v-model="extract.type" placeholder="解析方式">
+                    <el-option label="Xpath" value="Xpath"></el-option>
+                    <el-option label="Regex" value="Regex"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="1">&nbsp;</el-col>
+              <el-col :span="1">
+                <el-form-item label="NotNull">
+                  <el-switch v-model="extract.notNull"></el-switch>
+                </el-form-item>
+              </el-col>
+              <el-col :span="1">&nbsp;</el-col>
+              <el-col :span="2">
+                <el-form-item label="是否多项">
+                  <el-switch v-model="extract.multi"></el-switch>
+                </el-form-item>
               </el-col>
             </el-row>
             <h1></h1>
+            <lable>表达式</lable>
+            <el-form-item v-for="(va, i) in extract.value"
+            >
+              <el-row>
+                <el-col :span="10">
+                  <el-input v-model="extract.value[i]"></el-input>
+                </el-col>
+                <el-col :span="6">&nbsp;</el-col>
+                <el-col :span="3">
+                  <el-button type="primary" icon="el-icon-plus" v-if="i === 0" @click="addValue(index)"></el-button>
+                  <el-button type="danger" icon="el-icon-delete" v-else @click="removeValue(index, va)"></el-button>
+                </el-col>
+              </el-row>
+              <h1></h1>
+            </el-form-item>
+            <h1></h1>
+            <el-button v-if="extract.dataConversion === undefined || extract.dataConversion === null"
+                       type="primary" @click="openConversion(index)">使用处理函数</el-button>
+            <el-button v-else type="danger" @click="closeConversion(index)">关闭处理函数</el-button>
+            <el-row v-if="extract.dataConversion !== undefined && extract.dataConversion !== null">
+              <el-col :span="10">
+                <el-form-item label="函数名">
+                  <el-input v-model="extract.dataConversion.function"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="2">&nbsp;</el-col>
+              <el-col :span="10">
+                <el-form-item label="参数">
+                  <el-input v-model="extract.dataConversion.expression"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <h1></h1>
+            <el-button type="danger" @click.prevent="removeExtract(extract)">删除</el-button>
           </el-form-item>
-          <h1></h1>
-          <el-button v-if="extract.dataConversion === undefined || extract.dataConversion === null"
-                     type="primary" @click="openConversion(index)">使用处理函数</el-button>
-          <el-button v-else type="danger" @click="closeConversion(index)">关闭处理函数</el-button>
-          <el-row v-if="extract.dataConversion !== undefined && extract.dataConversion !== null">
-            <el-col :span="10">
-              <el-form-item label="函数名">
-                <el-input v-model="extract.dataConversion.function"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="2">&nbsp;</el-col>
-            <el-col :span="10">
-              <el-form-item label="参数">
-                <el-input v-model="extract.dataConversion.expression"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <h1></h1>
-          <el-button type="danger" @click.prevent="removeExtract(extract)">删除</el-button>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" @click="addExtract">新增字段</el-button>
-        </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="addExtract">新增字段</el-button>
+          </el-form-item>
+        </div>
       </el-form>
       <h1></h1>
       <el-button @click="submitData">保存</el-button>
@@ -278,6 +315,15 @@
     name: "AddSite",
     data() {
       return {
+        contentTypes: [
+          {
+            value: "application/json",
+            label: "JSON"
+          },{
+            value: "application/x-www-form-urlencoded",
+            label: "表单"
+          }
+        ],
         sources: [
           {
             value: 'News'
@@ -348,6 +394,7 @@
             value: '游戏'
           },
         ],
+        isOwnProcess: false,
         targetUrlDiaLog: false,
         testTargetUrls: [],
         testPageModelDiaLog: false,
@@ -385,6 +432,9 @@
           urlMd5: '',
           url: '',
           interval: 3600,
+          method: "get",
+          contentType: "",
+          body: "",
           type: '',
           source: '',
           spiderType: 'ListSpider',
@@ -392,6 +442,7 @@
           pageModels: [{
             targetUrl: [],
             helpUrl: [],
+            ownProcess: null,
             extracts: [{
               filed: "subject",
               value: [""],
